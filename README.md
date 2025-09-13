@@ -26,7 +26,7 @@ A aplicação foi construída com **React + Vite** no front-end, **Node.js/Expre
         |  UI + Context API         |  Autenticação, rotas REST, LLM Service
         |                           |
         v                           v
-  [Tailwind + shadcn/ui]      [Banco de Dados PostgreSQL]
+  [Tailwind + shadcn/ui]      [Banco de Dados MongoDB]
 
 🛠️ Tecnologias e Ferramentas
 
