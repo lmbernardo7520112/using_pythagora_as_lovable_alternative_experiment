@@ -7,6 +7,10 @@ import { Register } from "./pages/Register"
 import { ProtectedRoute } from "./components/ProtectedRoute"
 import { Layout } from "./components/Layout"
 import { BlankPage } from "./pages/BlankPage"
+import { Dashboard } from "./pages/Dashboard"
+import { BrowseProperties } from "./pages/BrowseProperties"
+import { PropertyDetails } from "./pages/PropertyDetails"
+import { MyBookings } from "./pages/MyBookings"
 
 function App() {
   return (
@@ -16,7 +20,10 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<ProtectedRoute> <Layout /> </ProtectedRoute>} />
+          <Route path="/" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/browse" element={<ProtectedRoute><Layout><BrowseProperties /></Layout></ProtectedRoute>} />
+          <Route path="/property/:id" element={<ProtectedRoute><Layout><PropertyDetails /></Layout></ProtectedRoute>} />
+          <Route path="/my-bookings" element={<ProtectedRoute><Layout><MyBookings /></Layout></ProtectedRoute>} />
           <Route path="*" element={<BlankPage />} />
         </Routes>
       </Router>
