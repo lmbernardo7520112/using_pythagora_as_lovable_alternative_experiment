@@ -11,6 +11,10 @@ import { Dashboard } from "./pages/Dashboard"
 import { BrowseProperties } from "./pages/BrowseProperties"
 import { PropertyDetails } from "./pages/PropertyDetails"
 import { MyBookings } from "./pages/MyBookings"
+import { MyProperties } from "./pages/MyProperties"
+import { Messages } from "./pages/Messages"
+import { Reviews } from "./pages/Reviews"
+import { Profile } from "./pages/Profile"
 
 function App() {
   return (
@@ -24,6 +28,11 @@ function App() {
           <Route path="/browse" element={<ProtectedRoute><Layout><BrowseProperties /></Layout></ProtectedRoute>} />
           <Route path="/property/:id" element={<ProtectedRoute><Layout><PropertyDetails /></Layout></ProtectedRoute>} />
           <Route path="/my-bookings" element={<ProtectedRoute><Layout><MyBookings /></Layout></ProtectedRoute>} />
+          <Route path="/my-properties" element={<ProtectedRoute><Layout><MyProperties /></Layout></ProtectedRoute>} />
+          <Route path="/messages" element={<ProtectedRoute><Layout><Messages /></Layout></ProtectedRoute>} />
+          <Route path="/messages/:bookingId" element={<ProtectedRoute><Layout><Messages /></Layout></ProtectedRoute>} />
+          <Route path="/reviews" element={<ProtectedRoute><Layout><Reviews /></Layout></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
           <Route path="*" element={<BlankPage />} />
         </Routes>
       </Router>
