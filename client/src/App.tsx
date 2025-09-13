@@ -15,6 +15,9 @@ import { MyProperties } from "./pages/MyProperties"
 import { Messages } from "./pages/Messages"
 import { Reviews } from "./pages/Reviews"
 import { Profile } from "./pages/Profile"
+import { Home } from "./pages/Home"
+import { Search } from "./pages/Search"
+import { PublicLayout } from "./components/PublicLayout"
 
 function App() {
   return (
@@ -22,9 +25,12 @@ function App() {
     <ThemeProvider defaultTheme="light" storageKey="ui-theme">
       <Router>
         <Routes>
+          <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+          <Route path="/search" element={<PublicLayout><Search /></PublicLayout>} />
+          <Route path="/properties/:id" element={<PublicLayout><PropertyDetails /></PublicLayout>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
           <Route path="/browse" element={<ProtectedRoute><Layout><BrowseProperties /></Layout></ProtectedRoute>} />
           <Route path="/property/:id" element={<ProtectedRoute><Layout><PropertyDetails /></Layout></ProtectedRoute>} />
           <Route path="/my-bookings" element={<ProtectedRoute><Layout><MyBookings /></Layout></ProtectedRoute>} />
