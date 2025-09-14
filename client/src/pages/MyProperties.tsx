@@ -29,7 +29,8 @@ export function MyProperties() {
       try {
         console.log('Fetching my properties...');
         const response = await getMyProperties();
-        setProperties((response as any).properties || []);
+        // Ajuste para tipagem segura, assumindo que getMyProperties retorna { properties: Property[] }
+        setProperties(response.properties || []);
       } catch (error) {
         console.error('Error fetching properties:', error);
         toast({
@@ -52,7 +53,7 @@ export function MyProperties() {
     <Card className="bg-white/90 backdrop-blur-sm border-0 shadow-lg hover:shadow-xl transition-all duration-300">
       <div className="relative">
         <img
-          src={property.photos[0]}
+          src={property.photos[0] || 'https://via.placeholder.com/300'} // Fallback para caso não haja foto
           alt={property.title}
           className="h-48 w-full object-cover rounded-t-lg"
         />
