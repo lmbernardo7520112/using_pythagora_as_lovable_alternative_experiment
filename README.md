@@ -26,7 +26,7 @@ A aplicação foi construída com **React + Vite** no front-end, **Node.js/Expre
         |  UI + Context API         |  Autenticação, rotas REST, LLM Service
         |                           |
         v                           v
-  [Tailwind + shadcn/ui]      [Banco de Dados PostgreSQL]
+  [Tailwind + shadcn/ui]      [Banco de Dados MongoDB]
 
 🛠️ Tecnologias e Ferramentas
 
@@ -52,7 +52,7 @@ Autenticação JWT e criptografia de senhas
 
 Infraestrutura
 
-PostgreSQL (configurado via server/config/database.js)
+MongoDB (configurado via server/config/database.js)
 
 Estrutura modular client/, server/ e shared/
 
