@@ -1,9 +1,8 @@
-require("dotenv").config(); // Carrega as variáveis do .env
-
+require("dotenv").config();
 const mongoose = require('mongoose');
 const Property = require('./models/Property');
 
-const userId = "68c5c2cf587150d74394acbd"; // Substitua pelo _id desejado (ex.: um dos acima)
+const userId = "68c5c2cf587150d74394acbd"; // Substitua pelo _id desejado
 
 const properties = [
   {
@@ -24,7 +23,7 @@ const properties = [
     ],
     amenities: ["WiFi", "Kitchen", "Parking", "Air Conditioning", "Gym"],
     status: "published",
-    blockedDates: ["2024-12-25", "2024-12-26"],
+    blockedDates: [new Date("2024-12-25"), new Date("2024-12-26")],
     ownerId: userId
   },
   {
@@ -52,15 +51,15 @@ const properties = [
 async function seedDatabase() {
   try {
     if (!process.env.DATABASE_URL) {
-      throw new Error('DATABASE_URL is not defined in .env file. Please set it to your MongoDB connection string.');
+      throw new Error('DATABASE_URL is not defined in .env file.');
     }
 
     await mongoose.connect(process.env.DATABASE_URL);
     console.log('Connected to MongoDB');
 
-    await Property.deleteMany(); // Limpa o banco antes de inserir
+    await Property.deleteMany();
     const insertedProperties = await Property.insertMany(properties);
-    console.log('Properties seeded:', insertedProperties);
+    console.log('Properties seeded:', insertedProperties.map(p => ({ id: p._id, title: p.title })));
   } catch (error) {
     console.error('Error seeding database:', error.message);
   } finally {

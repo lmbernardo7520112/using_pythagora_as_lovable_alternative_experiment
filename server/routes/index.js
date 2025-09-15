@@ -33,10 +33,10 @@ router.get('/api/properties/my-properties', requireUser(ALL_ROLES), async (req, 
   }
 });
 
-// GET /api/properties/:id - Pega uma propriedade por ID (sem auth para browse)
+// GET /api/properties/:id
 router.get('/api/properties/:id', async (req, res) => {
   try {
-    const property = await Property.findById(req.params.id).populate('ownerId');
+    const property = await Property.findById(req.params.id).populate('ownerId', 'fullName email profilePicture');
     if (!property) return res.status(404).json({ error: 'Property not found' });
     res.json({ property });
   } catch (error) {
