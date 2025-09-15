@@ -18,6 +18,11 @@ const EditProperty: React.FC = () => {
   });
   const [error, setError] = useState<string | null>(null);
 
+  // estados para API de análise
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false);
+  const [suggestion, setSuggestion] = useState<string | null>(null);
+  const [rating, setRating] = useState<number | null>(null);
+
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -73,6 +78,43 @@ const EditProperty: React.FC = () => {
     }
   };
 
+  // chamada à API de análise
+  const handleAnalyzeDescription = async () => {
+    if (!formData.description) {
+      setError('Preencha a descrição antes de analisar.');
+      return;
+    }
+    setLoadingAnalysis(true);
+    setError(null);
+    setSuggestion(null);
+    setRating(null);
+    try {
+      const response = await fetch(
+        'https://lmbernardo.app.n8n.cloud/webhook/6619eebc-ab50-4541-8076-368e633437d4',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ Description: formData.description }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Erro na chamada da API');
+      }
+
+      const data = await response.json();
+
+      // 🔧 Ajuste: tratar resposta encapsulada em "output"
+      const output = data.output || data;
+      setSuggestion(output.suggestion || 'Sem sugestão recebida.');
+      setRating(output.rating ?? null);
+    } catch (err: any) {
+      setError('Falha ao analisar descrição.');
+    } finally {
+      setLoadingAnalysis(false);
+    }
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Editar Propriedade</h1>
@@ -87,15 +129,42 @@ const EditProperty: React.FC = () => {
           placeholder="Título"
           required
         />
-        <input
-          type="text"
-          name="description"
-          value={formData.description || ''}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          placeholder="Descrição"
-          required
-        />
+
+        {/* Campo de descrição + botão analisar */}
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            name="description"
+            value={formData.description || ''}
+            onChange={handleChange}
+            className="border p-2 flex-1"
+            placeholder="Descrição"
+            required
+          />
+          <button
+            type="button"
+            onClick={handleAnalyzeDescription}
+            className="bg-green-500 text-white p-2 rounded"
+            disabled={loadingAnalysis}
+          >
+            {loadingAnalysis ? 'Analisando...' : 'Analisar'}
+          </button>
+        </div>
+
+        {/* Exibir resultado da análise */}
+        {suggestion && (
+          <div className="p-3 border rounded bg-gray-50">
+            <p>
+              <strong>Sugestão:</strong> {suggestion}
+            </p>
+            {rating !== null && (
+              <p>
+                <strong>Nota:</strong> {rating} / 5
+              </p>
+            )}
+          </div>
+        )}
+
         <input
           type="number"
           name="nightlyRate"
