@@ -9,10 +9,12 @@ const EditProperty: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Property>>({
     title: '',
     description: '',
-    address: { street: '', number: '', neighborhood: '', city: '', zipCode: '' }, // Estado inicial com address
+    address: { street: '', number: '', neighborhood: '', city: '', zipCode: '' },
     nightlyRate: 0,
     photos: [],
     amenities: [],
+    blockedDates: [],
+    status: 'published',
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +22,21 @@ const EditProperty: React.FC = () => {
     const fetchProperty = async () => {
       try {
         const { property } = await getProperty(id!);
-        setFormData(property || {}); // Usa o valor retornado ou o estado inicial
+        if (property) {
+          setFormData({
+            ...property,
+            photos: property.photos || [],
+            amenities: property.amenities || [],
+            blockedDates: property.blockedDates || [],
+            address: property.address || {
+              street: '',
+              number: '',
+              neighborhood: '',
+              city: '',
+              zipCode: '',
+            },
+          });
+        }
       } catch (err) {
         setError('Falha ao carregar propriedade.');
       }
@@ -32,23 +48,13 @@ const EditProperty: React.FC = () => {
     const { name, value } = e.target;
     if (name.includes('.')) {
       const [parent, child] = name.split('.');
-      setFormData((prev) => {
-        // Verifica se o parent existe e é um objeto
-        if (prev[parent as keyof Partial<Property>] && typeof prev[parent as keyof Partial<Property>] === 'object') {
-          return {
-            ...prev,
-            [parent]: {
-              ...(prev[parent as keyof Partial<Property>] as any), // Type assertion segura
-              [child]: value,
-            },
-          };
-        }
-        // Se não for um objeto, cria um novo ou mantém o estado
-        return {
-          ...prev,
-          [parent]: { [child]: value },
-        };
-      });
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: {
+          ...(prev[parent as keyof Partial<Property>] as any),
+          [child]: value,
+        },
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -78,6 +84,7 @@ const EditProperty: React.FC = () => {
           value={formData.title || ''}
           onChange={handleChange}
           className="border p-2 w-full"
+          placeholder="Título"
           required
         />
         <input
@@ -86,6 +93,7 @@ const EditProperty: React.FC = () => {
           value={formData.description || ''}
           onChange={handleChange}
           className="border p-2 w-full"
+          placeholder="Descrição"
           required
         />
         <input
@@ -94,15 +102,97 @@ const EditProperty: React.FC = () => {
           value={formData.nightlyRate || 0}
           onChange={handleChange}
           className="border p-2 w-full"
+          placeholder="Preço por noite"
           required
         />
+
+        {/* Endereço completo */}
         <input
           type="text"
           name="address.street"
           value={formData.address?.street || ''}
           onChange={handleChange}
           className="border p-2 w-full"
+          placeholder="Rua"
         />
+        <input
+          type="text"
+          name="address.number"
+          value={formData.address?.number || ''}
+          onChange={handleChange}
+          className="border p-2 w-full"
+          placeholder="Número"
+        />
+        <input
+          type="text"
+          name="address.neighborhood"
+          value={formData.address?.neighborhood || ''}
+          onChange={handleChange}
+          className="border p-2 w-full"
+          placeholder="Bairro"
+        />
+        <input
+          type="text"
+          name="address.city"
+          value={formData.address?.city || ''}
+          onChange={handleChange}
+          className="border p-2 w-full"
+          placeholder="Cidade"
+        />
+        <input
+          type="text"
+          name="address.zipCode"
+          value={formData.address?.zipCode || ''}
+          onChange={handleChange}
+          className="border p-2 w-full"
+          placeholder="CEP"
+        />
+
+        {/* Fotos */}
+        <input
+          type="text"
+          name="photos"
+          value={formData.photos?.join(', ') || ''}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              photos: e.target.value.split(',').map((url) => url.trim()),
+            }))
+          }
+          className="border p-2 w-full"
+          placeholder="URLs das fotos (separadas por vírgula)"
+        />
+
+        {/* Amenidades */}
+        <input
+          type="text"
+          name="amenities"
+          value={formData.amenities?.join(', ') || ''}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              amenities: e.target.value.split(',').map((a) => a.trim()),
+            }))
+          }
+          className="border p-2 w-full"
+          placeholder="Amenidades (separadas por vírgula)"
+        />
+
+        {/* Datas bloqueadas */}
+        <input
+          type="text"
+          name="blockedDates"
+          value={(formData.blockedDates as string[])?.join(', ') || ''}
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              blockedDates: e.target.value.split(',').map((d) => d.trim()),
+            }))
+          }
+          className="border p-2 w-full"
+          placeholder="Datas bloqueadas (YYYY-MM-DD, separadas por vírgula)"
+        />
+
         <button type="submit" className="bg-blue-500 text-white p-2 rounded">
           Atualizar
         </button>
